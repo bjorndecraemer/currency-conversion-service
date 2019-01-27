@@ -2,6 +2,8 @@ package com.bjornspetprojects.currencyconversionservice.controllers;
 
 import com.bjornspetprojects.currencyconversionservice.beans.CurrencyConversionBean;
 import com.bjornspetprojects.currencyconversionservice.proxy.CurrencyExchangeServiceProxy;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,6 +18,7 @@ import java.util.Map;
 public class CurrencyConversionController {
 
     private final CurrencyExchangeServiceProxy currencyExchangeServiceProxy;
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public CurrencyConversionController(CurrencyExchangeServiceProxy currencyExchangeServiceProxy) {
         this.currencyExchangeServiceProxy = currencyExchangeServiceProxy;
@@ -34,6 +37,8 @@ public class CurrencyConversionController {
                 uriVariables);
         CurrencyConversionBean response = responseEntity.getBody();
 
+        logger.info("{}",response);
+
         return new CurrencyConversionBean(response.getId(),from,to,response.getConversionMultiple(),quantity, quantity.multiply(response.getConversionMultiple()),response.getPort());
     }
 
@@ -43,6 +48,8 @@ public class CurrencyConversionController {
                                                   @PathVariable BigDecimal quantity) {
 
         CurrencyConversionBean response = currencyExchangeServiceProxy.retrieveExchangeValue(from,to);
+
+        logger.info("{}",response);
 
         return new CurrencyConversionBean(response.getId(),from,to,response.getConversionMultiple(),quantity, quantity.multiply(response.getConversionMultiple()),response.getPort());
     }
